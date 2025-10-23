@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/home_screen.dart';
 import 'calculator.dart';
 
 class InsidePage extends StatefulWidget {
@@ -16,6 +17,7 @@ class _InsidePageState extends State<InsidePage> {
     // Center(child: Text("Tab Kosong", style: TextStyle(fontSize: 20))),
     const CalculatorPage(),
     Scaffold(
+
       appBar: AppBar(title: const Text('Settings')),
       body: Column(
         children: [
@@ -107,6 +109,7 @@ class _InsidePageState extends State<InsidePage> {
         ],
       ),
     ),
+    const HomeScreen(),
   ];
 
   @override
@@ -130,8 +133,8 @@ class _InsidePageState extends State<InsidePage> {
             label: 'Gallery',
           ), 
           NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
+            icon: Icon(Icons.data_array_outlined),
+            label: 'Data',
           ),
         ],
       ),
@@ -181,12 +184,13 @@ class DashboardPage extends StatelessWidget {
               ),
               elevation: 2,
               child: ListTile(
-                leading: const Icon(Icons.settings_outlined),
-                title: const Text('Settings'),
+                leading: const Icon(Icons.settings_outlined), 
+                title: const Text('Gallery'),
                 subtitle: const Text('App preferences and notifications'),
                 onTap: () {},
               ),
             ),
+            
           ],
         ),
       ),

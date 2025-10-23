@@ -1,80 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://xxmhehnoaedkjicjlwfz.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4bWhlaG5vYWVka2ppY2psd2Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNjk1NjMsImV4cCI6MjA3Njc0NTU2M30.Dpx1nuM9BgiVJKYeis6t0R-0PGXsVVq4ETm_3_8e9bE',
+  );
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: MyHomePage()),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: Login(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Animation controller = the metronome
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true); // loop back and forth
-
-    // Tween = range of values (0.8x to 1.2x size)
-    _animation = Tween<double>(
-      begin: 0.8,
-      end: 1.2,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose(); // don’t leak memory like a rookie
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Center(
-          child: Text("FIRST PROJECT", style: TextStyle(fontSize: 30)),
-        ),
-        const SizedBox(height: 20),
-        const Text(
-          "1101224329 - Dhiya Isnavisa",
-          style: TextStyle(fontSize: 20),
-        ),
-        const SizedBox(height: 20),
-
-        // Here’s the animated CircleAvatar
-        ScaleTransition(
-          scale: _animation,
-          child: const CircleAvatar(
-            backgroundImage: AssetImage('lib/assets/dhy.png'),
-            radius: 60,
-          ),
-        ),
-      ],
-    );
-  }
-}
