@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/home_screen.dart';
 import 'calculator.dart';
+import 'movies_home_screen.dart'; // Add this import
 
 class InsidePage extends StatefulWidget {
   const InsidePage({super.key});
@@ -14,22 +15,19 @@ class _InsidePageState extends State<InsidePage> {
 
   final pages = [
     const DashboardPage(),
-    // Center(child: Text("Tab Kosong", style: TextStyle(fontSize: 20))),
     const CalculatorPage(),
     Scaffold(
-
       appBar: AppBar(title: const Text('Settings')),
       body: Column(
         children: [
           const SizedBox(height: 20),
           Container(
             height: 200,
-
             alignment: Alignment.centerLeft,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children:[
+                children: [
                   Image.network(
                     'https://i.pinimg.com/736x/00/48/6e/00486e6443178ef5c1558e5c3dee7e92.jpg',
                   ),
@@ -79,7 +77,7 @@ class _InsidePageState extends State<InsidePage> {
                     'https://i.pinimg.com/736x/00/48/6e/00486e6443178ef5c1558e5c3dee7e92.jpg',
                   ),
                 ],
-              ) 
+              ),
             ),
           ),
           Container(
@@ -110,6 +108,7 @@ class _InsidePageState extends State<InsidePage> {
       ),
     ),
     const HomeScreen(),
+    const MoviesHomeScreen(), // Added Movies tab
   ];
 
   @override
@@ -131,17 +130,20 @@ class _InsidePageState extends State<InsidePage> {
           NavigationDestination(
             icon: Icon(Icons.browse_gallery_outlined),
             label: 'Gallery',
-          ), 
+          ),
           NavigationDestination(
             icon: Icon(Icons.data_array_outlined),
             label: 'Data',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.movie_outlined),
+            label: 'Movies',
           ),
         ],
       ),
     );
   }
 }
-
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -173,7 +175,6 @@ class DashboardPage extends StatelessWidget {
                 subtitle: const Text('View and edit your profile'),
                 onTap: () {
                   // Navigate to profile page
-                  
                 },
               ),
             ),
@@ -184,19 +185,15 @@ class DashboardPage extends StatelessWidget {
               ),
               elevation: 2,
               child: ListTile(
-                leading: const Icon(Icons.settings_outlined), 
+                leading: const Icon(Icons.settings_outlined),
                 title: const Text('Gallery'),
                 subtitle: const Text('App preferences and notifications'),
                 onTap: () {},
               ),
             ),
-            
           ],
         ),
       ),
     );
   }
-
-
-  
 }
