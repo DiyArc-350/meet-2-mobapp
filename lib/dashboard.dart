@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/home_screen.dart';
 import 'calculator.dart';
-import 'movies_home_screen.dart'; // Add this import
+import 'movies_home_screen.dart';
+import 'didi_home_screen.dart'; // Add this import
 
 class InsidePage extends StatefulWidget {
   const InsidePage({super.key});
@@ -108,7 +109,8 @@ class _InsidePageState extends State<InsidePage> {
       ),
     ),
     const HomeScreen(),
-    const MoviesHomeScreen(), // Added Movies tab
+    const MoviesHomeScreen(),
+    const DidiHomeScreen(), // Added Quiz tab
   ];
 
   @override
@@ -139,6 +141,7 @@ class _InsidePageState extends State<InsidePage> {
             icon: Icon(Icons.movie_outlined),
             label: 'Movies',
           ),
+          NavigationDestination(icon: Icon(Icons.quiz_outlined), label: 'Quiz'),
         ],
       ),
     );
