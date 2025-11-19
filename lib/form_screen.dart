@@ -144,7 +144,7 @@ class _FormScreenState extends State<FormScreen> {
                 onSaved: (val) => _nim = val!,
               ),
               DropdownButtonFormField<String>(
-                value: _kelas,
+                initialValue: _kelas,
                 decoration: const InputDecoration(labelText: 'Kelas'),
                 items: _kelasOptions
                     .map((k) => DropdownMenuItem(value: k, child: Text(k)))

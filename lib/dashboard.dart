@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/home_screen.dart';
+import 'package:flutter_application_1/storage_list.dart';
 import 'calculator.dart';
 import 'movies_home_screen.dart';
-import 'didi_home_screen.dart'; // Add this import
+import 'didi_home_screen.dart';
 
 class InsidePage extends StatefulWidget {
   const InsidePage({super.key});
@@ -110,39 +111,68 @@ class _InsidePageState extends State<InsidePage> {
     ),
     const HomeScreen(),
     const MoviesHomeScreen(),
-    const DidiHomeScreen(), // Added Quiz tab
+    const DidiHomeScreen(),
+    const StorageList(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[_currentIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) => setState(() => _currentIndex = index),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            label: 'Dashboard',
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 65,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.calculate_outlined),
-            label: 'Calculator',
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildNavItem(0, Icons.dashboard_outlined, 'Dashboard'),
+                _buildNavItem(1, Icons.calculate_outlined, 'Calculator'),
+                _buildNavItem(2, Icons.browse_gallery_outlined, 'Gallery'),
+                _buildNavItem(3, Icons.data_array_outlined, 'Data'),
+                _buildNavItem(4, Icons.movie_outlined, 'Movies'),
+                _buildNavItem(5, Icons.quiz_outlined, 'Quiz'),
+                _buildNavItem(6, Icons.storage_outlined, 'Storage'),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.browse_gallery_outlined),
-            label: 'Gallery',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.data_array_outlined),
-            label: 'Data',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.movie_outlined),
-            label: 'Movies',
-          ),
-          NavigationDestination(icon: Icon(Icons.quiz_outlined), label: 'Quiz'),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(int index, IconData icon, String label) {
+    final isSelected = _currentIndex == index;
+    return InkWell(
+      onTap: () => setState(() => _currentIndex = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: isSelected ? Colors.blue : Colors.grey, size: 26),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected ? Colors.blue : Colors.grey,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -154,47 +184,337 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Welcome!',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text('This is your main dashboard screen.'),
-            const SizedBox(height: 20),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Welcome!',
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
               ),
-              elevation: 2,
-              child: ListTile(
-                leading: const Icon(Icons.person_outline),
-                title: const Text('Profile'),
-                subtitle: const Text('View and edit your profile'),
-                onTap: () {
-                  // Navigate to profile page
-                },
+              const SizedBox(height: 10),
+              const Text('This is your main dashboard screen.'),
+              const SizedBox(height: 20),
+
+              // Profile Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(Icons.person_outline, color: Colors.blue),
+                  title: const Text('Profile'),
+                  subtitle: const Text('View and edit your profile'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to profile page
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Profile page - Coming soon'),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+              const SizedBox(height: 10),
+
+              // Gallery Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.browse_gallery_outlined,
+                    color: Colors.green,
+                  ),
+                  title: const Text('Gallery'),
+                  subtitle: const Text('Browse your photos and videos'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to Gallery tab (index 2)
+                    final insidePageState = context
+                        .findAncestorStateOfType<_InsidePageState>();
+                    if (insidePageState != null) {
+                      insidePageState.setState(() {
+                        insidePageState._currentIndex = 2;
+                      });
+                    }
+                  },
+                ),
               ),
-              elevation: 2,
-              child: ListTile(
-                leading: const Icon(Icons.settings_outlined),
-                title: const Text('Gallery'),
-                subtitle: const Text('App preferences and notifications'),
-                onTap: () {},
+              const SizedBox(height: 10),
+
+              // Settings Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.settings_outlined,
+                    color: Colors.orange,
+                  ),
+                  title: const Text('Settings'),
+                  subtitle: const Text('App preferences and notifications'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Settings page - Coming soon'),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+
+              // Storage Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.storage_outlined,
+                    color: Colors.purple,
+                  ),
+                  title: const Text('Storage'),
+                  subtitle: const Text('Manage your files and storage'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to Storage tab (index 6)
+                    final insidePageState = context
+                        .findAncestorStateOfType<_InsidePageState>();
+                    if (insidePageState != null) {
+                      insidePageState.setState(() {
+                        insidePageState._currentIndex = 6;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Calculator Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.calculate_outlined,
+                    color: Colors.red,
+                  ),
+                  title: const Text('Calculator'),
+                  subtitle: const Text('Quick calculations and math tools'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to Calculator tab (index 1)
+                    final insidePageState = context
+                        .findAncestorStateOfType<_InsidePageState>();
+                    if (insidePageState != null) {
+                      insidePageState.setState(() {
+                        insidePageState._currentIndex = 1;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Movies Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.movie_outlined,
+                    color: Colors.indigo,
+                  ),
+                  title: const Text('Movies'),
+                  subtitle: const Text('Browse movies and watch trailers'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to Movies tab (index 4)
+                    final insidePageState = context
+                        .findAncestorStateOfType<_InsidePageState>();
+                    if (insidePageState != null) {
+                      insidePageState.setState(() {
+                        insidePageState._currentIndex = 4;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Quiz Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(Icons.quiz_outlined, color: Colors.teal),
+                  title: const Text('Quiz'),
+                  subtitle: const Text('Test your knowledge'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to Quiz tab (index 5)
+                    final insidePageState = context
+                        .findAncestorStateOfType<_InsidePageState>();
+                    if (insidePageState != null) {
+                      insidePageState.setState(() {
+                        insidePageState._currentIndex = 5;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Data Card
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.data_array_outlined,
+                    color: Colors.cyan,
+                  ),
+                  title: const Text('Data'),
+                  subtitle: const Text('View and manage your data'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to Data tab (index 3)
+                    final insidePageState = context
+                        .findAncestorStateOfType<_InsidePageState>();
+                    if (insidePageState != null) {
+                      insidePageState.setState(() {
+                        insidePageState._currentIndex = 3;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Help & Support Section
+              const Padding(
+                padding: EdgeInsets.only(top: 20, bottom: 10),
+                child: Text(
+                  'Help & Support',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(Icons.help_outline, color: Colors.amber),
+                  title: const Text('Help Center'),
+                  subtitle: const Text('Get help and support'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Help Center - Coming soon'),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.feedback_outlined,
+                    color: Colors.pink,
+                  ),
+                  title: const Text('Send Feedback'),
+                  subtitle: const Text('Share your thoughts with us'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Feedback form - Coming soon'),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.info_outline,
+                    color: Colors.blueGrey,
+                  ),
+                  title: const Text('About'),
+                  subtitle: const Text('App version and information'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('About'),
+                        content: const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('App Name: Flutter Dashboard'),
+                            SizedBox(height: 8),
+                            Text('Version: 1.0.0'),
+                            SizedBox(height: 8),
+                            Text('Developed by: Your Team'),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Bottom padding for better scrolling experience
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

@@ -24,7 +24,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
             ),
             Center(child: Text("1101224329")),
             const CircleAvatar(
-              backgroundImage: AssetImage('lib/assets/dhy.PNG'),
+              backgroundImage: AssetImage('lib/assets/dhy.png'),
               radius: 300,
             ),
             SizedBox(height: 20),
@@ -165,7 +165,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         if (_currentInput.isNotEmpty) {
           _num1 = double.parse(_currentInput);
           _operator = buttonText;
-          _output = _num1.toString() + " " + _operator;
+          _output = "$_num1 $_operator";
           _shouldResetInput = true;
         }
       } else {
