@@ -3,6 +3,8 @@ import 'package:flutter_application_1/home_screen.dart';
 import 'package:flutter_application_1/storage_list.dart';
 import 'calculator.dart';
 import 'movies_home_screen.dart';
+import 'package:flutter_application_1/login.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'didi_home_screen.dart';
 
 class InsidePage extends StatefulWidget {
@@ -11,7 +13,6 @@ class InsidePage extends StatefulWidget {
   @override
   State<InsidePage> createState() => _InsidePageState();
 }
-
 class _InsidePageState extends State<InsidePage> {
   int _currentIndex = 0;
 
@@ -181,11 +182,52 @@ class _InsidePageState extends State<InsidePage> {
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
+  Future<void> _logout(BuildContext context) async {
+    final supabase = Supabase.instance.client;
+    await supabase.auth.signOut();
+    if (context.mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    }
+  }
+
+  void _confirmLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Konfirmasi Logout'),
+        content: const Text('Apakah Anda yakin ingin logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(), // batal
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(); // tutup dialog
+              _logout(context);
+            },
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _confirmLogout(context),
+          ),
+        ],
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
@@ -520,3 +562,5 @@ class DashboardPage extends StatelessWidget {
     );
   }
 }
+
+
