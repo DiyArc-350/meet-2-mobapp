@@ -6,6 +6,7 @@ import 'movies_home_screen.dart';
 import 'package:flutter_application_1/login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'didi_home_screen.dart';
+import 'qrcode_page.dart';
 
 class InsidePage extends StatefulWidget {
   const InsidePage({super.key});
@@ -13,6 +14,7 @@ class InsidePage extends StatefulWidget {
   @override
   State<InsidePage> createState() => _InsidePageState();
 }
+
 class _InsidePageState extends State<InsidePage> {
   int _currentIndex = 0;
 
@@ -114,6 +116,7 @@ class _InsidePageState extends State<InsidePage> {
     const MoviesHomeScreen(),
     const DidiHomeScreen(),
     const StorageList(),
+    const QRCodePage(),
   ];
 
   @override
@@ -144,6 +147,7 @@ class _InsidePageState extends State<InsidePage> {
                 _buildNavItem(4, Icons.movie_outlined, 'Movies'),
                 _buildNavItem(5, Icons.quiz_outlined, 'Quiz'),
                 _buildNavItem(6, Icons.storage_outlined, 'Storage'),
+                _buildNavItem(7, Icons.qr_code, 'QRCode'),
               ],
             ),
           ),
@@ -186,9 +190,9 @@ class DashboardPage extends StatelessWidget {
     final supabase = Supabase.instance.client;
     await supabase.auth.signOut();
     if (context.mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const Login()),
-      );
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (context) => const Login()));
     }
   }
 
@@ -214,8 +218,6 @@ class DashboardPage extends StatelessWidget {
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -562,5 +564,3 @@ class DashboardPage extends StatelessWidget {
     );
   }
 }
-
-

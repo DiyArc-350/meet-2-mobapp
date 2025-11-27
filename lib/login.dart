@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_application_1/register_page.dart';
@@ -69,75 +70,80 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[100],
-        title: const Text("Login Page/08780030"),
+        title: const Text("Login Page - 1101224329"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 80),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: const Text("Email", style: TextStyle(fontSize: 20)),
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter your email',
+        child: AutofillGroup(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            children: [
+              const SizedBox(height: 80),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: const Text("Email", style: TextStyle(fontSize: 20)),
               ),
-              controller: usernameController,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: const Text("Password", style: TextStyle(fontSize: 20)),
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter your password',
-              ),
-              controller: passwordController,
-              obscureText: true,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _login,
-              child: Text(
-                _isLoading ? "Loading..." : "Login",
-                style: const TextStyle(fontSize: 20),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterPage(),
-                      ),
-                    );
-                  },
-                  child: const Text("Register"),
+              TextField(
+                autofillHints: const [AutofillHints.email],
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter your email',
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ResetPage(),
-                      ),
-                    );
-                  },
-                  child: const Text("Reset Password"),
+                controller: usernameController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 20),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: const Text("Password", style: TextStyle(fontSize: 20)),
+              ),
+              TextField(
+                autofillHints: const [AutofillHints.password],
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter your password',
                 ),
-              ],
-            ),
-          ],
+                controller: passwordController,
+                obscureText: true,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _isLoading ? null : _login,
+                child: Text(
+                  _isLoading ? "Loading..." : "Login",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterPage(),
+                        ),
+                      );
+                    },
+                    child: const Text("Register"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ResetPage(),
+                        ),
+                      );
+                    },
+                    child: const Text("Reset Password"),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -25,7 +26,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Login(),
+      home: Builder(
+        builder: (context) {
+          return SplashScreen(
+            onFinish: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const Login()),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

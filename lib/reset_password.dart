@@ -22,9 +22,7 @@ class _ResetPageState extends State<ResetPage> {
   bool _showPasswordFields = false;
 
   void _showMessage(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Future<void> _sendOtp() async {
@@ -97,12 +95,11 @@ class _ResetPageState extends State<ResetPage> {
 
       if (response.session != null) {
         // Update password user
-        await supabase.auth.updateUser(
-          UserAttributes(password: newPassword),
-        );
+        await supabase.auth.updateUser(UserAttributes(password: newPassword));
 
         _showMessage(
-            'Password berhasil direset! Silakan login dengan password baru.');
+          'Password berhasil direset! Silakan login dengan password baru.',
+        );
 
         // Kembali ke halaman login
         Navigator.pop(context);
@@ -130,8 +127,7 @@ class _ResetPageState extends State<ResetPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
           children: [
             const Text(
               'Reset Password',
@@ -150,8 +146,9 @@ class _ResetPageState extends State<ResetPage> {
               decoration: InputDecoration(
                 labelText: 'Email',
                 prefixIcon: const Icon(Icons.email_outlined),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               enabled: !_otpSent,
               keyboardType: TextInputType.emailAddress,
@@ -166,7 +163,8 @@ class _ResetPageState extends State<ResetPage> {
                   labelText: 'Kode OTP',
                   prefixIcon: const Icon(Icons.lock_outline),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   hintText: 'Masukkan kode OTP dari email',
                 ),
                 keyboardType: TextInputType.number,
@@ -182,7 +180,8 @@ class _ResetPageState extends State<ResetPage> {
                   labelText: 'Password Baru',
                   prefixIcon: const Icon(Icons.lock_outline),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 obscureText: true,
               ),
@@ -193,7 +192,8 @@ class _ResetPageState extends State<ResetPage> {
                   labelText: 'Konfirmasi Password Baru',
                   prefixIcon: const Icon(Icons.lock_outline),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 obscureText: true,
               ),
@@ -225,4 +225,3 @@ class _ResetPageState extends State<ResetPage> {
     );
   }
 }
-  
