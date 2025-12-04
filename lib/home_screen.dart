@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/form_screen.dart';
 import 'package:flutter_application_1/supabase_service.dart';
+import 'package:flutter_application_1/user_session.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -75,18 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text('Tutup'),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FormScreen(existingData: mhs),
-                ),
-              ).then((_) => _refreshData());
-            },
-            child: const Text('Edit'),
-          ),
+          if ((UserSession.level ?? 1) >= 2)
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FormScreen(existingData: mhs),
+                  ),
+                ).then((_) => _refreshData());
+              },
+              child: const Text('Edit'),
+            ),
         ],
       ),
     );
@@ -213,52 +215,60 @@ class _HomeScreenState extends State<HomeScreen> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        FormScreen(existingData: mhs),
-                                  ),
-                                );
-                                _refreshData();
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () async {
-                                final confirm = await showDialog<bool>(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text('Konfirmasi'),
-                                    content: const Text(
-                                      'Yakin ingin menghapus data ini?',
+                            if ((UserSession.level ?? 1) >= 2)
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.blue,
+                                ),
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          FormScreen(existingData: mhs),
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, false),
-                                        child: const Text('Batal'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, true),
-                                        child: const Text('Hapus'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-
-                                if (confirm == true) {
-                                  await _supabaseService.deleteData(
-                                    mhs['id'].toString(),
                                   );
                                   _refreshData();
-                                }
-                              },
-                            ),
+                                },
+                              ),
+                            if ((UserSession.level ?? 1) >= 3)
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Konfirmasi'),
+                                      content: const Text(
+                                        'Yakin ingin menghapus data ini?',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, false),
+                                          child: const Text('Batal'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, true),
+                                          child: const Text('Hapus'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirm == true) {
+                                    await _supabaseService.deleteData(
+                                      mhs['id'].toString(),
+                                    );
+                                    _refreshData();
+                                  }
+                                },
+                              ),
                           ],
                         ),
                         isThreeLine: true,
@@ -271,16 +281,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const FormScreen()),
-          );
-          _refreshData();
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: (UserSession.level ?? 1) >= 2
+          ? FloatingActionButton(
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FormScreen()),
+                );
+                _refreshData();
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

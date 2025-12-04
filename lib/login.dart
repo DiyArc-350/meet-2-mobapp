@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_application_1/register_page.dart';
 import 'package:flutter_application_1/reset_password.dart';
 import 'package:flutter_application_1/services/biometric_auth_service.dart';
+import 'package:flutter_application_1/user_session.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -39,6 +40,22 @@ class _LoginState extends State<Login> {
   Future<void> _authenticate() async {
     bool authenticated = await _biometricAuthService.authenticate();
     if (authenticated) {
+      final user = supabase.auth.currentUser;
+      if (user != null) {
+        try {
+          final userData = await supabase
+              .from('users')
+              .select('level')
+              .eq('id', user.id)
+              .single();
+          UserSession.level = userData['level'] as int?;
+        } catch (e) {
+          UserSession.level = 1;
+        }
+      } else {
+        UserSession.level = 1;
+      }
+
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -62,12 +79,25 @@ class _LoginState extends State<Login> {
     setState(() => _isLoading = true);
 
     try {
-      // signInWithPassword adalah cara login email & password di Supabase
       final response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
       if (response.session != null) {
+        // Fetch user level
+        try {
+          final userData = await supabase
+              .from('users')
+              .select('level')
+              .eq('id', response.user!.id)
+              .single();
+          UserSession.level = userData['level'] as int?;
+        } catch (e) {
+          // Default to Level 1 if error or user not found
+          print('Error fetching user level: $e');
+          UserSession.level = 1;
+        }
+
         // Login berhasil, arahkan ke Dashboard
         Navigator.pushReplacement(
           context,

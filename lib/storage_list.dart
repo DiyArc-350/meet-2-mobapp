@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
+import 'package:flutter_application_1/user_session.dart';
 
 class StorageList extends StatefulWidget {
   const StorageList({super.key});
@@ -555,16 +556,17 @@ class _StorageListState extends State<StorageList> {
                                   ],
                                 ),
                               ),
-                              PopupMenuItem(
-                                value: 'rename',
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.edit, size: 20),
-                                    SizedBox(width: 12),
-                                    Text('Rename'),
-                                  ],
+                              if ((UserSession.level ?? 1) >= 2)
+                                PopupMenuItem(
+                                  value: 'rename',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.edit, size: 20),
+                                      SizedBox(width: 12),
+                                      Text('Rename'),
+                                    ],
+                                  ),
                                 ),
-                              ),
                               PopupMenuItem(
                                 value: 'share',
                                 child: Row(
@@ -575,23 +577,24 @@ class _StorageListState extends State<StorageList> {
                                   ],
                                 ),
                               ),
-                              PopupMenuItem(
-                                value: 'delete',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.delete,
-                                      size: 20,
-                                      color: Colors.red,
-                                    ),
-                                    SizedBox(width: 12),
-                                    Text(
-                                      'Delete',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ],
+                              if ((UserSession.level ?? 1) >= 3)
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.delete,
+                                        size: 20,
+                                        color: Colors.red,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Text(
+                                        'Delete',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ),
@@ -601,7 +604,7 @@ class _StorageListState extends State<StorageList> {
           ),
 
           // Bulk Delete Button
-          if (selectedFiles.length > 1)
+          if (selectedFiles.length > 1 && (UserSession.level ?? 1) >= 3)
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(12),
@@ -618,11 +621,13 @@ class _StorageListState extends State<StorageList> {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showUploadOptions(),
-        backgroundColor: Colors.blue,
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: (UserSession.level ?? 1) >= 2
+          ? FloatingActionButton(
+              onPressed: () => _showUploadOptions(),
+              backgroundColor: Colors.blue,
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 
