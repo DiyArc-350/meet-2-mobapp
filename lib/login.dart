@@ -4,6 +4,7 @@ import 'package:flutter_application_1/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_application_1/register_page.dart';
 import 'package:flutter_application_1/reset_password.dart';
+import 'package:flutter_application_1/services/biometric_auth_service.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -17,7 +18,37 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final BiometricAuthService _biometricAuthService = BiometricAuthService();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometrics();
+  }
+
+  Future<void> _checkBiometrics() async {
+    bool canCheckBiometrics = await _biometricAuthService
+        .isBiometricAvailable();
+    if (canCheckBiometrics) {
+      // Optionally show a message or enable biometric button state
+      print("Biometrics available");
+    }
+  }
+
+  Future<void> _authenticate() async {
+    bool authenticated = await _biometricAuthService.authenticate();
+    if (authenticated) {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => InsidePage()),
+        );
+      }
+    } else {
+      _showMessage('Biometric authentication failed');
+    }
+  }
 
   Future<void> _login() async {
     final email = usernameController.text.trim();
@@ -113,6 +144,12 @@ class _LoginState extends State<Login> {
                   _isLoading ? "Loading..." : "Login",
                   style: const TextStyle(fontSize: 20),
                 ),
+              ),
+              const SizedBox(height: 20),
+              IconButton(
+                icon: const Icon(Icons.fingerprint, size: 50),
+                onPressed: _authenticate,
+                tooltip: 'Login with Biometrics',
               ),
               const SizedBox(height: 20),
               Row(
