@@ -7,16 +7,27 @@ import 'package:flutter_application_1/login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'didi_home_screen.dart';
 import 'qrcode_page.dart';
+import 'profile_page.dart';
 
 class InsidePage extends StatefulWidget {
   const InsidePage({super.key});
 
   @override
   State<InsidePage> createState() => _InsidePageState();
+
+  static _InsidePageState? of(BuildContext context) {
+    return context.findAncestorStateOfType<_InsidePageState>();
+  }
 }
 
 class _InsidePageState extends State<InsidePage> {
   int _currentIndex = 0;
+
+  void setIndex(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   final pages = [
     const DashboardPage(),
@@ -117,6 +128,7 @@ class _InsidePageState extends State<InsidePage> {
     const DidiHomeScreen(),
     const StorageList(),
     const QRCodePage(),
+    const ProfilePage(),
   ];
 
   @override
@@ -148,6 +160,7 @@ class _InsidePageState extends State<InsidePage> {
                 _buildNavItem(5, Icons.quiz_outlined, 'Quiz'),
                 _buildNavItem(6, Icons.storage_outlined, 'Storage'),
                 _buildNavItem(7, Icons.qr_code, 'QRCode'),
+                _buildNavItem(8, Icons.person_outline, 'Profile'),
               ],
             ),
           ),
@@ -259,12 +272,11 @@ class DashboardPage extends StatelessWidget {
                   subtitle: const Text('View and edit your profile'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
-                    // Navigate to profile page
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Profile page - Coming soon'),
-                      ),
-                    );
+                    // Navigate to profile page (index 8)
+                    final insidePageState = InsidePage.of(context);
+                    if (insidePageState != null) {
+                      insidePageState.setIndex(8);
+                    }
                   },
                 ),
               ),
@@ -286,12 +298,9 @@ class DashboardPage extends StatelessWidget {
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     // Navigate to Gallery tab (index 2)
-                    final insidePageState = context
-                        .findAncestorStateOfType<_InsidePageState>();
+                    final insidePageState = InsidePage.of(context);
                     if (insidePageState != null) {
-                      insidePageState.setState(() {
-                        insidePageState._currentIndex = 2;
-                      });
+                      insidePageState.setIndex(2);
                     }
                   },
                 ),
@@ -339,12 +348,9 @@ class DashboardPage extends StatelessWidget {
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     // Navigate to Storage tab (index 6)
-                    final insidePageState = context
-                        .findAncestorStateOfType<_InsidePageState>();
+                    final insidePageState = InsidePage.of(context);
                     if (insidePageState != null) {
-                      insidePageState.setState(() {
-                        insidePageState._currentIndex = 6;
-                      });
+                      insidePageState.setIndex(6);
                     }
                   },
                 ),
@@ -367,12 +373,9 @@ class DashboardPage extends StatelessWidget {
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     // Navigate to Calculator tab (index 1)
-                    final insidePageState = context
-                        .findAncestorStateOfType<_InsidePageState>();
+                    final insidePageState = InsidePage.of(context);
                     if (insidePageState != null) {
-                      insidePageState.setState(() {
-                        insidePageState._currentIndex = 1;
-                      });
+                      insidePageState.setIndex(1);
                     }
                   },
                 ),
@@ -395,12 +398,9 @@ class DashboardPage extends StatelessWidget {
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     // Navigate to Movies tab (index 4)
-                    final insidePageState = context
-                        .findAncestorStateOfType<_InsidePageState>();
+                    final insidePageState = InsidePage.of(context);
                     if (insidePageState != null) {
-                      insidePageState.setState(() {
-                        insidePageState._currentIndex = 4;
-                      });
+                      insidePageState.setIndex(4);
                     }
                   },
                 ),
@@ -419,13 +419,9 @@ class DashboardPage extends StatelessWidget {
                   subtitle: const Text('Test your knowledge'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
-                    // Navigate to Quiz tab (index 5)
-                    final insidePageState = context
-                        .findAncestorStateOfType<_InsidePageState>();
+                    final insidePageState = InsidePage.of(context);
                     if (insidePageState != null) {
-                      insidePageState.setState(() {
-                        insidePageState._currentIndex = 5;
-                      });
+                      insidePageState.setIndex(5);
                     }
                   },
                 ),
@@ -448,12 +444,9 @@ class DashboardPage extends StatelessWidget {
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     // Navigate to Data tab (index 3)
-                    final insidePageState = context
-                        .findAncestorStateOfType<_InsidePageState>();
+                    final insidePageState = InsidePage.of(context);
                     if (insidePageState != null) {
-                      insidePageState.setState(() {
-                        insidePageState._currentIndex = 3;
-                      });
+                      insidePageState.setIndex(3);
                     }
                   },
                 ),

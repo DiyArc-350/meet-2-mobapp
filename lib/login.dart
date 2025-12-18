@@ -6,6 +6,7 @@ import 'package:flutter_application_1/register_page.dart';
 import 'package:flutter_application_1/reset_password.dart';
 import 'package:flutter_application_1/services/biometric_auth_service.dart';
 import 'package:flutter_application_1/user_session.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -20,6 +21,7 @@ class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final BiometricAuthService _biometricAuthService = BiometricAuthService();
+  final _storage = const FlutterSecureStorage();
   bool _isLoading = false;
 
   @override
@@ -40,30 +42,48 @@ class _LoginState extends State<Login> {
   Future<void> _authenticate() async {
     bool authenticated = await _biometricAuthService.authenticate();
     if (authenticated) {
-      final user = supabase.auth.currentUser;
-      if (user != null) {
-        try {
-          final userData = await supabase
-              .from('users')
-              .select('level')
-              .eq('id', user.id)
-              .single();
-          UserSession.level = userData['level'] as int?;
-        } catch (e) {
-          UserSession.level = 1;
-        }
-      } else {
-        UserSession.level = 1;
-      }
+      setState(() => _isLoading = true);
+      try {
+        final email = await _storage.read(key: 'email');
+        final password = await _storage.read(key: 'password');
 
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => InsidePage()),
-        );
+        if (email != null && password != null) {
+          final response = await supabase.auth.signInWithPassword(
+            email: email,
+            password: password,
+          );
+
+          if (response.session != null) {
+            try {
+              final userData = await supabase
+                  .from('users')
+                  .select('level')
+                  .eq('id', response.user!.id)
+                  .single();
+              UserSession.level = userData['level'] as int?;
+            } catch (e) {
+              UserSession.level = 1;
+            }
+
+            if (mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => InsidePage()),
+              );
+            }
+          } else {
+            _showMessage('Biometric login failed. Please login with password.');
+          }
+        } else {
+          _showMessage(
+            'Please login with password first to enable biometrics.',
+          );
+        }
+      } catch (e) {
+        _showMessage('Biometric login error: $e');
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
       }
-    } else {
-      _showMessage('Biometric authentication failed');
     }
   }
 
@@ -97,6 +117,10 @@ class _LoginState extends State<Login> {
           print('Error fetching user level: $e');
           UserSession.level = 1;
         }
+
+        // Simpan creds untuk biometric next time
+        await _storage.write(key: 'email', value: email);
+        await _storage.write(key: 'password', value: password);
 
         // Login berhasil, arahkan ke Dashboard
         Navigator.pushReplacement(
